@@ -22,6 +22,7 @@ public class SnakeAndLadder {
         int startPosition = 0;
         int currentPosition = 0;
         System.out.println("Player starting on: " + startPosition);
+        while (currentPosition != 100) {
         System.out.println("Enter 1 to roll a die");
         int die = input.nextInt();
         if(die == 1){
@@ -42,11 +43,21 @@ public class SnakeAndLadder {
                     System.out.println("Option: NO PLAY");
                     break;
             }
-            System.out.println("Current Position: " +currentPosition);
+            if (currentPosition == 100) {
+                System.out.println("Position: " + currentPosition);
+                System.out.println("You Won!");
+                break;
+            } else if (currentPosition < 0) {
+                currentPosition = startPosition;
+                System.out.println("Back to Start");
+                System.out.println("Current Position: " + currentPosition);
+            } else {
+                System.out.println("Current Position: " + currentPosition);
+            }
             System.out.println("-------------------------------");
-        }
-        else {
+            } else {
             System.exit(0);
-        }
+                   }
+           }
         }
 }
