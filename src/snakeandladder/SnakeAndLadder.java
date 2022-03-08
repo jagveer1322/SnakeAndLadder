@@ -6,64 +6,133 @@ public class SnakeAndLadder {
     public static final int IS_LADDER = 1;
     public static final int IS_SNAKE = 2;
     static Random random = new Random();
+    int startPosition = 0;
+    int currentPosition = 0;
+    int position1 = 0;
+    int position2 = 0;
+    int playerDie = 0;
+    int counterP1 = 0;
+    int counterP2 = 0;
+    int player = 1;
 
+    public static void main(String[] args){
+        System.out.println("Snake and Ladder Simulator");           //welcome message
+        System.out.println("-------------------------------");
+        SnakeAndLadder s1 = new SnakeAndLadder();
+        System.out.println("Player 1 is Starting at: " + s1.startPosition);
+        System.out.println("Player 2 is Starting at: " + s1.startPosition);
+
+        while (s1.currentPosition != 100) {
+            if (s1.player == 1) {
+               s1.optionCheck(1);
+            }
+            else {
+               s1.optionCheck(2);
+            }
+        }
+    }
+    //---------------------------------------------------------------------------
     static int getRandomDieValue() {
         int randomValue = random.nextInt(6) + 1;
         return randomValue;
     }
+    //----------------------------------------------------------------------------
     static int getRandomOption() {
         int randomValue1 = random.nextInt(3);
         return randomValue1;
     }
-    public static void main(String[] args){
-        System.out.println("Snake and Ladder Simulator");           //welcome message
-        System.out.println("-------------------------------");
-        Scanner in = new Scanner(System.in);
+    //-----------------------------------------------------------------------------
+    void checkPosition(int p) {
 
-        int startPosition = 0;
-        int currentPosition = 0;
-        int counter = 0;
-        System.out.println("Player is starting at: " +startPosition);
-        while (currentPosition != 100) {
-            counter++;
-            System.out.println("Enter 1 to roll a die");
-            int die = in.nextInt();
-            if (die == 1) {
-                int playerDie = getRandomDieValue();
-                System.out.println("Die Face: " + playerDie);
-                int option = getRandomOption();
-                switch (option) {
-                    case IS_LADDER:
-                        System.out.println("Option: LADDER");
-                        currentPosition += playerDie;
-                        break;
-                    case IS_SNAKE:
-                        System.out.println("Option: SNAKE");
-                        currentPosition -= playerDie;
-                        break;
-                    default:
-                        System.out.println("Option: NO PLAY");
-                        break;
-                }
-                if (currentPosition == 100) {
-                    System.out.println("Position: " + currentPosition);
-                    System.out.println("You Won! You took " +counter +" plays of dice to Win.");
-                    break;
-                } else if (currentPosition > 100) {
-                    currentPosition -= playerDie;
-                    System.out.println("Invalid move! You are at the same position.");
-                    System.out.println("Current Position: " + currentPosition);
-                } else if (currentPosition < 0) {
-                    currentPosition = startPosition;
-                    System.out.println("Back to Start");
-                    System.out.println("Current Position: " + currentPosition);
-                } else {
-                    System.out.println("Current Position: " + currentPosition);
-                }
-                System.out.println("-------------------------------");
-            } else {
-                System.exit(0);
-            }
+        if (currentPosition == 100) {
+            System.out.println("Current Position of Player " +p +" is " + currentPosition);
+            exitGame(p);
+        }
+        else if (currentPosition > 100) {
+            currentPosition -= playerDie;
+            System.out.println("Invalid move! You are at the same position.");
+            System.out.println("Current Position of Player " +p +" is " + currentPosition);
+        }
+        else if (currentPosition < 0) {
+            currentPosition = startPosition;
+            System.out.println("Back to Start");
+            System.out.println("Current Position of Player " +p +" is " + currentPosition);
+        }
+        else {
+            System.out.println("Current Position of Player " +p +" is " + currentPosition);
+        }
+        position(p);
+    }
+    //----------------------------------------------------------------
+    void position(int p){
+        if (p == 1) {
+            position1 = currentPosition;
+        } else {
+            position2 = currentPosition;
         }
     }
-}   
+    //-----------------------------------------------------------------
+    void optionCheck(int p) {
+        if (p == 1) {
+            counterP1++;
+            currentPosition = position1;
+        } else {
+            counterP2++;
+            currentPosition = position2;
+        }
+        playerDie = getRandomDieValue();
+        System.out.println("-------------------------------");
+        System.out.println("Player " +p);
+        System.out.println("Enter 5 to roll a die");
+        Scanner in = new Scanner(System.in);
+        int die = in.nextInt();
+        if (die == 5) {
+            System.out.println("Dice Face for Player " + p + ": " + playerDie);
+            int option = getRandomOption();
+            switch (option) {
+                case IS_LADDER:
+                    System.out.println("Option: LADDER");
+                    currentPosition += playerDie;
+                    checkPosition(p);
+                    optionCheck(p);
+                    break;
+                case IS_SNAKE:
+                    System.out.println("Option: SNAKE");
+                    currentPosition -= playerDie;
+                    checkPosition(p);
+                    checkPlayer();
+                    break;
+                default:
+                    System.out.println("Option: No play");
+                    checkPosition(p);
+                    checkPlayer();
+                    break;
+            }
+            position(p);
+        }
+        else{
+            System.exit(0);
+        }
+    }
+    //--------------------------------------
+    void checkPlayer() {
+        if (player == 1) {
+            player = 2;
+        }
+        else {
+            player = 1;
+        }
+    }
+    //--------------------------------------
+    void exitGame(int p) {
+        int count = 0;
+        if (p == 1) {
+            count = counterP1;
+        }
+        else {
+            count = counterP2;
+        }
+        System.out.println("Player " + p + " won the game!. It took " + count + " Dice plays to win.");
+        System.exit(0);
+    }
+}
